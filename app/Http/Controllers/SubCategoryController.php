@@ -7,14 +7,12 @@ use Illuminate\Http\Request;
 
 class SubCategoryController extends Controller
 {
-    // Lister toutes les sous-catégories d'une catégorie parente
     public function index($parentId)
     {
         $parentCategory = Category::findOrFail($parentId);
         return $parentCategory->subCategories;
     }
 
-    // Créer une nouvelle sous-catégorie pour une catégorie parente
     public function store(Request $request, $parentId)
     {
         $request->validate([
@@ -33,13 +31,11 @@ class SubCategoryController extends Controller
         return $subCategory;
     }
 
-    // Afficher une sous-catégorie spécifique
     public function show($parentId, $id)
     {
         return Category::where('parent_id', $parentId)->findOrFail($id);
     }
 
-    // Mettre à jour une sous-catégorie
     public function update(Request $request, $parentId, $id)
     {
         $request->validate([
@@ -52,7 +48,6 @@ class SubCategoryController extends Controller
         return $subCategory;
     }
 
-    // Supprimer une sous-catégorie
     public function destroy($parentId, $id)
     {
         $subCategory = Category::where('parent_id', $parentId)->findOrFail($id);
