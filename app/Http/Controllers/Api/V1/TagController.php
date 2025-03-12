@@ -1,56 +1,49 @@
-<?php
-
+<?php 
 namespace App\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use App\Models\Tag;
-use App\Http\Resources\TagResource;
 use App\Http\Controllers\Controller;
+use App\Repositories\TagRepositoryInterface;
+use Illuminate\Http\Request;
 
 class TagController extends Controller
-{   
-    public function index()
+{
+    protected $tagRepository;
+
+    public function __construct(TagRepositoryInterface $tagRepository)
     {
-        $tags = Tag::all();
-        return TagResource::collection($tags);
+        $this->tagRepository = $tagRepository;
     }
 
-    public function store(Request $request)
+    public function index()
     {
-        $tag = Tag::create($request->all());
-        return new TagResource($tag);
+        return $this->tagRepository->all();
     }
 
     public function show($id)
     {
-        $tag = Tag::find($id);
-        if ($tag) {
-            return new TagResource($tag);
-        } else {
-            return response()->json(['message' => 'Tag not found'], 404);
-        }
+        return $this->tagRepository->find($id);
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255|unique:tags,name',
+        ]);
+
+        return $this->tagRepository->create($request->all());
+    }
 
     public function update(Request $request, $id)
     {
-        $tag = Tag::find($id);
-        if ($tag) {
-            $tag->update($request->all());
-            return new TagResource($tag);
-        } else {
-            return response()->json(['message' => 'Tag not found'], 404);
-        }
+        $request->validate([
+            'name' => 'sometimes|string|max:255|unique:tags,name,' . $id,
+        ]);
+
+        return $this->tagRepository->update($id, $request->all());
     }
 
     public function destroy($id)
     {
-        $tag = Tag::find($id);
-        if ($tag) {
-            $tag->delete();
-            return response()->json(['message' => 'Tag deleted'], 200);
-        } else {
-            return response()->json(['message' => 'Tag not found'], 404);
-        }
+        return $this->tagRepository->delete($id);
     }
 }

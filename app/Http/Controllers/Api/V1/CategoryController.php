@@ -2,49 +2,51 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Repositories\CategoryRepositoryInterface;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
+
     public function index()
     {
-        return Category::all();
+        return $this->categoryRepository->all();
     }
 
     public function show($id)
     {
-        return Category::findOrFail($id);
+        return $this->categoryRepository->find($id);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name',
+            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        return Category::create($request->all());
+        return $this->categoryRepository->create($request->all());
     }
 
     public function update(Request $request, $id)
     {
-        $category = Category::findOrFail($id);
-
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'sometimes|string|max:255|unique:categories,name,' . $id,
+            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        $category->update($request->all());
-
-        return $category;
+        return $this->categoryRepository->update($id, $request->all());
     }
 
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
-        $category->delete();
-
-        return response()->noContent();
+        return $this->categoryRepository->delete($id);
     }
 }
