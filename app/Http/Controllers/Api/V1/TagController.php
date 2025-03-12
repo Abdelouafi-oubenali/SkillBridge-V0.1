@@ -1,9 +1,10 @@
 <?php 
 namespace App\Http\Controllers\Api\V1;
 
+use Illuminate\Http\Request;
+use App\Http\Requests\StoreTags;
 use App\Http\Controllers\Controller;
 use App\Repositories\TagRepositoryInterface;
-use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
@@ -24,21 +25,13 @@ class TagController extends Controller
         return $this->tagRepository->find($id);
     }
 
-    public function store(Request $request)
+    public function store(StoreTags $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:tags,name',
-        ]);
-
         return $this->tagRepository->create($request->all());
     }
 
-    public function update(Request $request, $id)
+    public function update(StoreTags $request, $id)
     {
-        $request->validate([
-            'name' => 'sometimes|string|max:255|unique:tags,name,' . $id,
-        ]);
-
         return $this->tagRepository->update($id, $request->all());
     }
 

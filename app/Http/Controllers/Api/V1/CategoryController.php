@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\CategoryRepositoryInterface;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategory;
+use App\Repositories\CategoryRepositoryInterface;
 
 class CategoryController extends Controller
 {
@@ -25,23 +26,17 @@ class CategoryController extends Controller
         return $this->categoryRepository->find($id);
     }
 
-    public function store(Request $request)
+    public function store(StoreCategory $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-            'parent_id' => 'nullable|exists:categories,id',
+           
         ]);
 
         return $this->categoryRepository->create($request->all());
     }
 
-    public function update(Request $request, $id)
+    public function update(StoreCategory $request, $id)
     {
-        $request->validate([
-            'name' => 'sometimes|string|max:255|unique:categories,name,' . $id,
-            'parent_id' => 'nullable|exists:categories,id',
-        ]);
-
         return $this->categoryRepository->update($id, $request->all());
     }
 
