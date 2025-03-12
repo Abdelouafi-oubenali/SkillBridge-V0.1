@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class SubCategoryController extends Controller
     public function store(Request $request, $parentId)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name',
         ]);
 
         $parentCategory = Category::findOrFail($parentId);
@@ -39,7 +40,7 @@ class SubCategoryController extends Controller
     public function update(Request $request, $parentId, $id)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'sometimes|string|max:255|unique:categories,name,' . $id,
         ]);
 
         $subCategory = Category::where('parent_id', $parentId)->findOrFail($id);

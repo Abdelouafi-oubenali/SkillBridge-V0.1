@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Http\Resources\TagResource;
+use App\Http\Controllers\Controller;
 
 class TagController extends Controller
-{
+{   
     public function index()
     {
         $tags = Tag::all();
