@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Repositories\TagRepository;
+use App\Repositories\UserRepository;
 use App\Repositories\CourseRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\CategoryRepository;
 use App\Repositories\TagRepositoryInterface;
+use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CourseRepositoryInterface;
 use App\Repositories\CategoryRepositoryInterface;
 
@@ -27,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
             CourseRepositoryInterface::class,
             CourseRepository::class
         );
+        $this->app->bind(
+            UserRepositoryInterface::class,
+             UserRepository::class);
+
     }
 
     public function boot()
