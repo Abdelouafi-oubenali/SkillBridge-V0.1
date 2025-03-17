@@ -1,9 +1,15 @@
 <?php
 
+use GuzzleHttp\Middleware;
 use Illuminate\Http\Request;
+use function Pest\Laravel\get;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\AthController;
 use App\Http\Controllers\Api\V1\TagController;
+
+use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CourseController;
+
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
 
@@ -19,6 +25,14 @@ Route::prefix('V1')->group(function () {
     Route::apiResource('courses', CourseController::class);
 });
 
+Route::prefix('V1')->group(function () {
+   Route::post('/register', [AuthController::class, 'register']);
+   Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum'); 
+
+
+});
+
 
 
 Route::prefix('V1')->group(function () {
@@ -30,6 +44,15 @@ Route::prefix('V1')->group(function () {
         Route::delete('/{id}', [SubCategoryController::class, 'destroy']); 
     });
 });
+
+   // Authentification
+   Route::get('/login', [AuthController::class, 'login']);
+   Route::get('/register', [AuthController::class, 'register']);
+
+   Route::middleware(['auth:sanctum'])->group(function () {
+       Route::post('/logout', [AuthController::class, 'logout']);
+       Route::get('/profile', [AuthController::class, 'profile']);
+   });
 
 
 
