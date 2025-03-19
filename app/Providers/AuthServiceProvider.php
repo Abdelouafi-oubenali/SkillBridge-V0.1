@@ -53,7 +53,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('edit-course', function (User $user, Course $course) {
-            return $user->id === $course->user_id || $user->role === 'admin';
+            return $user->id === $course->users_id || $user->role === 'admin';
         });
 
         Gate::define('enroll-course', function (User $user) {
@@ -62,7 +62,6 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('manage-enrollment', function (User $user) {
             $role = trim(strtolower($user->role));
-            Log::info('Gate::define - Vérification du rôle après nettoyage: ' . $role); 
             return $role === 'mentor' || $role === 'admin';
         });
     }

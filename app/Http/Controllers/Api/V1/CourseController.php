@@ -1,13 +1,17 @@
 <?php 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Course;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCourseRequest;
 use App\Repositories\CourseRepositoryInterface;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CourseController extends Controller
 {
+    use AuthorizesRequests; 
+
     protected $courseRepository;
 
     public function __construct(CourseRepositoryInterface $courseRepository)
@@ -29,7 +33,7 @@ class CourseController extends Controller
     {
 
         if (!auth()->check()) {
-            return response()->json(['error' => 'Unauthorized'], 401);  // إعادة استجابة خطأ إذا لم يكن المستخدم مسجل الدخول
+            return response()->json(['error' => 'Unauthorized'], 401);  
         }
     
         $user = auth()->user();
@@ -43,11 +47,13 @@ class CourseController extends Controller
     }
     
 
-    public function update(StoreCourseRequest $request, $id)
+    public function update(StoreCourseRequest $request, Course $course)
     {
-        return $this->courseRepository->update($id, $request->all());
+        $this->authorize('update', $course);
+        $course->update($request->all());
+        return response()->json(['message' => 'Course updated successfully', 'course' => $course]);
     }
-
+    
     public function destroy($id)
     {
         return $this->courseRepository->delete($id);
