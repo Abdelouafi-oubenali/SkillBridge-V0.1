@@ -28,7 +28,6 @@ class SubCategoryController extends Controller
         ]);
 
         $parentCategory->subCategories()->save($subCategory);
-
         return $subCategory;
     }
 

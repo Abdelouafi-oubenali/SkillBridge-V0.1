@@ -11,6 +11,10 @@ use App\Repositories\TagRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CourseRepositoryInterface;
 use App\Repositories\CategoryRepositoryInterface;
+use App\Repositories\ProfilleRepositoryInterface;
+use App\Repositories\ProfilleRepository;
+
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,12 +35,18 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->bind(
             UserRepositoryInterface::class,
-             UserRepository::class);
+             UserRepository::class
+        );
+        $this->app->bind(
+            ProfilleRepositoryInterface::class,
+            ProfilleRepository::class
+        );
+        
 
     }
 
     public function boot()
     {
-        //
+        
     }
 }
