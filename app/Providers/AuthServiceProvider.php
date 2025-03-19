@@ -8,6 +8,7 @@ use App\Models\Enrollment;
 use App\Policies\UserPolicy;
 use App\Policies\CoursePolicy;
 use App\Policies\EnrollmentPolicy;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -60,7 +61,9 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('manage-enrollment', function (User $user) {
-            return $user->role === 'mentor' || $user->role === 'admin';
+            $role = trim(strtolower($user->role));
+            Log::info('Gate::define - Vérification du rôle après nettoyage: ' . $role); 
+            return $role === 'mentor' || $role === 'admin';
         });
     }
 }

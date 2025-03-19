@@ -80,29 +80,34 @@ class EnrollmentController extends Controller
     public function updateStatus(Request $request, Enrollment $enrollment)
     {
         $user = $request->user();
+    
+        // dd($user->role);
+        // dd(Gate::has('manage-enrollment'));
 
-        if (Gate::denies('manage-enrollment', $user)) {
+        if (!Gate::allows('manage-enrollment', $user)) {
             return response()->json(['message' => 'Vous n\'êtes pas autorisé à gérer cette inscription.'], 403);
         }
-
+    
         $validator = Validator::make($request->all(), [
             'status' => 'required|in:accepted,rejected',
         ]);
-
-        if ($validator->fails()) {
+    
+        if ($validator->fails()) 
+        {
             return response()->json([
                 'message' => 'Validation échouée.',
                 'errors' => $validator->errors(),
             ], 422);
         }
-
+    
         $enrollment->update(['status' => $request->status]);
-
+    
         return response()->json([
             'message' => 'Statut de l\'inscription mis à jour.',
             'enrollment' => $enrollment,
         ], 200);
     }
+    
 
     /**
      *
@@ -113,7 +118,8 @@ class EnrollmentController extends Controller
     {
         $user = $request->user();
 
-        if ($user->role !== 'admin') {
+        if ($user->role !== 'admin') 
+        {
             return response()->json(['message' => 'Vous n\'êtes pas autorisé à voir toutes les inscriptions.'], 403);
         }
 

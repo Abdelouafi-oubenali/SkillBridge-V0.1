@@ -36,11 +36,11 @@ class EnrollmentPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Enrollment $enrollment)
+    public function update(User $user)
     {
         return $user->role === 'mentor' || $user->role === 'admin';
     }
-
+    
     /**
      * Determine whether the user can delete the model.
      */
