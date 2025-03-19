@@ -23,13 +23,14 @@ Route::prefix('V1')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/profile', [ProfileController::class, 'getProfile']); 
         Route::put('/profile', [ProfileController::class, 'updateProfile']); 
+        Route::apiResource('courses', CourseController::class);
+
     });
 
 
 
     Route::apiResource('tags', TagController::class);
     Route::apiResource('categories', CategoryController::class);
-    Route::apiResource('courses', CourseController::class);
 
 
     Route::prefix('categories/{parentId}/sub-categories')->group(function () {

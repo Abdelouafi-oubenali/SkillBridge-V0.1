@@ -9,18 +9,18 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description','content','category_id','user_id'];
+    protected $fillable = ['title', 'description','content','category_id','users_id'];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-    
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
@@ -29,6 +29,11 @@ class Course extends Model
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'users_id');
     }
 }
 
