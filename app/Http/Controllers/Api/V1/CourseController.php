@@ -27,8 +27,21 @@ class CourseController extends Controller
 
     public function store(StoreCourseRequest $request)
     {
-        return $this->courseRepository->create($request->all());
+
+        if (!auth()->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);  // إعادة استجابة خطأ إذا لم يكن المستخدم مسجل الدخول
+        }
+    
+        $user = auth()->user();
+    
+    
+        $data = $request->all();
+        $data['users_id'] = $user->id;
+        // dd($data);
+    
+        return $this->courseRepository->create($data);
     }
+    
 
     public function update(StoreCourseRequest $request, $id)
     {
