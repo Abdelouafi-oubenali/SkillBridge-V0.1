@@ -36,14 +36,13 @@ class EnrollmentController extends Controller
     public function enroll(Request $request, Course $course)
     {
         $user = $request->user();
-    
         Log::info('Valeur exacte du rôle de l\'utilisateur : "' . $user->role . '"');
 
-        if (!Gate::denies('enroll-course', $user)) {
+        if (Gate::denies('enroll-course', $user)) {
             Log::error('Accès refusé : L\'utilisateur n\'a pas le rôle "student".', ['user' => $user]);
             return response()->json(['message' => 'Vous n\'êtes pas autorisé à vous inscrire.'], 403);
         }
-
+        
         $existingEnrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->first();
