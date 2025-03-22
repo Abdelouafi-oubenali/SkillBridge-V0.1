@@ -19,9 +19,9 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/profile', [profilleController::class, 'getProfile']); 
-    Route::put('/profile', [profilleController::class, 'updateProfile']); 
-});
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::get('/profile', [profilleController::class, 'getProfile']); 
+//     Route::put('/profile', [profeilleController::class, 'updateProfile']); 
+// });
 
 // require __DIR__.'/auth.php';cls
