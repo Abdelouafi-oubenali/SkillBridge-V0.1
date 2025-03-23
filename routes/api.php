@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\ProfileController; 
 use App\Http\Controllers\Api\V2\EnrollmentController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
+use App\Http\Controllers\Api\V2\StatistiquesController;
 
 
 Route::prefix('V1')->group(function () {
@@ -47,12 +48,16 @@ Route::prefix('V1')->group(function () {
 
 });
 
-Route::prefix('V2')->group(function () {
+Route::pref.ix('V2')->group(function () {
     Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->middleware('auth:sanctum');
-
     Route::put('/enrollments/{enrollment}/status', [EnrollmentController::class, 'updateStatus'])->middleware('auth:sanctum');
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/stats/courses', [StatistiquesController::class, 'getCourseStats'])->middleware('auth:sanctum');
+    Route::get('/stats/categories', [StatistiquesController::class, 'getcategoryeStats'])->middleware('auth:sanctum');
+    Route::get('/stats/tags', [StatistiquesController::class, 'gettagseStats'])->middleware('auth:sanctum');
+
 });
+
 
 
 Route::get('/user', function (Request $request) {
