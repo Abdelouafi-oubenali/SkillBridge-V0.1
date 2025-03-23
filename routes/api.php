@@ -48,7 +48,7 @@ Route::prefix('V1')->group(function () {
 
 });
 
-Route::pref.ix('V2')->group(function () {
+Route::prefix('V2')->group(function () {
     Route::post('/courses/{course}/enroll', [EnrollmentController::class, 'enroll'])->middleware('auth:sanctum');
     Route::put('/enrollments/{enrollment}/status', [EnrollmentController::class, 'updateStatus'])->middleware('auth:sanctum');
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->middleware('auth:sanctum');

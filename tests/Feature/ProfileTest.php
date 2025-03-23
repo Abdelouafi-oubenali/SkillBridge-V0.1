@@ -3,14 +3,22 @@
 use App\Models\User;
 
 test('profile page is displayed', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'password' => bcrypt('password'),
+    ]);
+    $loginResponse = $this->post('/api/V1/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+    $loginResponse->assertStatus(200);
+    $token = $loginResponse->json('token');
 
-    $response = $this
-        ->actingAs($user)
-        ->get('/profile');
-
+    $response = $this->withHeaders([
+        'Authorization' => 'Bearer ' . $token,
+    ])->get('/api/V1/profile');
     $response->assertOk();
 });
+
 
 test('profile information can be updated', function () {
     $user = User::factory()->create();
