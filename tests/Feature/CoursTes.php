@@ -1,25 +1,33 @@
 <?php
+use App\Models\User;
 
 describe("CourseController tests", function () {
 
     test('can see list of courses', function () {
-        
-        $course = \App\Models\Course::factory()->create();
+        $user = \App\Models\User::factory()->create(); 
+    
+        $this->actingAs($user); 
+    
+        $course = \App\Models\Course::factory()->create([
+            'users_id' => $user->id, 
+        ]);
 
-        $response = $this->get('api/V1/courses');
-        
+        $response = $this->get('api/V1/courses'); 
+    
         $response->assertStatus(200);
         $response->assertJsonStructure([
             '*' => [
-                    'id',
-                    'title',
-                    'content',
-                    'category_id',
+                'id',
+                'title',
+                'content',
+                'category_id',
             ],
         ]);
     });
+    
 
     test('can create a course', function () {
+        $user = User::factory()->create(); 
         $category = \App\Models\Category::factory()->create();
     
         $course = [
@@ -28,17 +36,21 @@ describe("CourseController tests", function () {
             'category_id' => $category->id,
         ];
     
-        $response = $this->post('/api/V1/courses', $course);
+        $response = $this->actingAs($user)->post('/api/V1/courses', $course);
+    
         $response->assertStatus(201);
         $response->assertJson([
             'title' => 'css tailwind',
             'category_id' => $category->id,
         ]);
     });
-
-    test('can update a course', function () {
+    test('can update a course when user is the owner', function () {
+        $user = User::factory()->create(); // إنشاء مستخدم
         $category = \App\Models\Category::factory()->create();
-        $course = \App\Models\Course::factory()->create(['category_id' => $category->id]);
+        $course = \App\Models\Course::factory()->create([
+            'category_id' => $category->id,
+            'users_id' => $user->id, // الدورة تنتمي لهذا المستخدم
+        ]);
     
         $updateData = [
             'title' => 'Updated Course Title',
@@ -46,15 +58,19 @@ describe("CourseController tests", function () {
             'category_id' => $category->id,
         ];
     
-        $response = $this->put("api/V1/courses/{$course->id}", $updateData);
+        // تسجيل الدخول باستخدام نفس المستخدم الذي يملك الدورة
+        $response = $this->actingAs($user)->put("api/V1/courses/{$course->id}", $updateData);
     
         $response->assertStatus(200);
         $response->assertJson([
-            'title' => 'Updated Course Title',
+            'message' => 'Course updated successfully',
+            'course' => [
+                'title' => 'Updated Course Title',
+            ],
         ]);
         $this->assertDatabaseHas('courses', ['title' => 'Updated Course Title']);
     });
-
+    
 
     test('can delete a course', function () {
         $course = \App\Models\Course::factory()->create();
