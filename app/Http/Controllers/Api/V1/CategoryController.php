@@ -28,9 +28,6 @@ class CategoryController extends Controller
 
     public function store(StoreCategory $request)
     {
-        $request->validate([
-           
-        ]);
 
         return $this->categoryRepository->create($request->all());
     }

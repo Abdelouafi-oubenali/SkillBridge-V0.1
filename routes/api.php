@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\V2\EnrollmentController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
 use App\Http\Controllers\Api\V2\StatistiquesController;
 use App\Http\Controllers\Api\V2\StripeController;
-
+use App\Http\Controllers\Api\V2\BadgeController;
 
 
 
@@ -63,6 +63,9 @@ Route::prefix('V2')->group(function () {
     Route::post('/checkout', [StripeController::class, 'checkout']);
     Route::get('/checkout/success', [StripeController::class, 'success']);
     Route::get('/checkout/cancel', [StripeController::class, 'cancel']);
+
+    // les padg gestion 
+    Route::middleware('auth:sanctum')->apiResource('badges', BadgeController::class);
 });
 
 
