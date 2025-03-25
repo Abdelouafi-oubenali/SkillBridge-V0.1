@@ -10,6 +10,9 @@ use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Api\V2\EnrollmentController;
 use App\Http\Controllers\Api\V1\SubCategoryController;
 use App\Http\Controllers\Api\V2\StatistiquesController;
+use App\Http\Controllers\Api\V2\StripeController;
+
+
 
 
 Route::prefix('V1')->group(function () {
@@ -56,8 +59,11 @@ Route::prefix('V2')->group(function () {
     Route::get('/stats/categories', [StatistiquesController::class, 'getcategoryeStats'])->middleware('auth:sanctum');
     Route::get('/stats/tags', [StatistiquesController::class, 'gettagseStats'])->middleware('auth:sanctum');
 
+    // pement sesteme 
+    Route::post('/checkout', [StripeController::class, 'checkout']);
+    Route::get('/checkout/success', [StripeController::class, 'success']);
+    Route::get('/checkout/cancel', [StripeController::class, 'cancel']);
 });
-
 
 
 Route::get('/user', function (Request $request) {

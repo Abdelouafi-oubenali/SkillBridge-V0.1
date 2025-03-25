@@ -36,14 +36,12 @@ class EnrollmentController extends Controller
     public function enroll(Request $request, Course $course)
     {
         $user = $request->user();
-    
-        Log::info('Valeur exacte du rôle de l\'utilisateur : "' . $user->role . '"');
-
-        if (!Gate::denies('enroll-course', $user)) {
+        
+        if (!Gate::allows('enroll-course', $user)) {
             Log::error('Accès refusé : L\'utilisateur n\'a pas le rôle "student".', ['user' => $user]);
             return response()->json(['message' => 'Vous n\'êtes pas autorisé à vous inscrire.'], 403);
         }
-
+    
         $existingEnrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)
             ->first();
@@ -65,11 +63,31 @@ class EnrollmentController extends Controller
     
         Log::info('Nouvelle inscription créée : ', ['enrollment' => $enrollment]);
     
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+    
+        $session = \Stripe\Checkout\Session::create([
+            'payment_method_types' => ['card'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => $course->title,
+                    ],
+                    'unit_amount' => $course->price * 100, 
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => url('/api/V2/checkout/success?enrollment_id=' . $enrollment->id),
+            'cancel_url' => url('/api/V2/checkout/cancel'),
+        ]);
+    
         return response()->json([
-            'message' => 'Demande d\'inscription envoyée.',
-            'enrollment' => $enrollment,
+            'message' => 'Inscription réussie. Redirection vers le paiement.',
+            'payment_url' => $session->url,
         ], 201);
     }
+    
 
     /**
      *
