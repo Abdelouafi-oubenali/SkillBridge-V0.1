@@ -14,12 +14,8 @@ class StatistiquesController extends Controller
     public function getCourseStats()
     {
         $totalCourses = Course::count();
-
         $coursesWithEnrollments = Course::withCount('enrollments')->get();
-
         $totalEnrollments = Enrollment::count();
-
-
         return response()->json([
             'total_courses' => $totalCourses,
             'courses_with_enrollments' => $coursesWithEnrollments,

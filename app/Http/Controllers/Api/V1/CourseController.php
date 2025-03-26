@@ -63,7 +63,6 @@ class CourseController extends Controller
         }   
         return $this->courseRepository->create($data);
     }
-    
 
     public function update(StoreCourseRequest $request, Course $course)
     {
@@ -71,7 +70,7 @@ class CourseController extends Controller
         $course->update($request->all());
         return response()->json(['message' => 'Course updated successfully', 'course' => $course]);
     }
-    
+
     public function destroy($id)
     {
         return $this->courseRepository->delete($id);
