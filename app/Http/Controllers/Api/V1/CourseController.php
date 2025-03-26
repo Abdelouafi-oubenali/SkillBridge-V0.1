@@ -75,6 +75,19 @@ class CourseController extends Controller
     {
         return $this->courseRepository->delete($id);
     }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+        
+        $courses = Course::query()
+            ->when($query, function ($q) use ($query) {
+                $q->where('title', 'like', '%'.$query.'%')
+                  ->orWhere('description', 'like', '%'.$query.'%');
+            })
+            ->get();
+        return response()->json($courses);
+    }
 }
 
 

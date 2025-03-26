@@ -68,6 +68,10 @@ Route::prefix('V2')->group(function () {
     Route::middleware('auth:sanctum')->apiResource('badges', BadgeController::class);
     Route::middleware('auth:sanctum')->get('/badge-to-mentors', [BadgeController::class, 'badgeToMentors']);
 
+    // serche par les course 
+    Route::get('courses/serch', [CourseController::class, 'search']);
+
+
 });
 
 
