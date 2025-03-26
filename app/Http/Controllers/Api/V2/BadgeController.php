@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V2;
 
 use App\Models\Badge;
 use App\Models\Course;
+use App\Models\UserBadge;
 use App\Models\Enrollment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -64,6 +65,21 @@ class BadgeController extends Controller
         return response()->json(['message' => 'Badge supprimé avec succès'], 200);
     }
 
-
-    
+    public function getMesBadges(Request $request)
+    {
+        $user = $request->user(); 
+        if (!$user) {
+            return response()->json(['message' => 'Utilisateur non authentifié'], 401);
+        }
+        $badges = UserBadge::where('user_id', $user->id)->get();        
+        $mesBadges = collect();
+                foreach ($badges as $badge) {
+            $badgeDetails = Badge::where('id', $badge->badge_id)->first();
+            
+            if ($badgeDetails) {
+                $mesBadges->push($badgeDetails);
+            }
+        }    
+        return response()->json($mesBadges);
+    }
 }

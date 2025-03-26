@@ -17,8 +17,6 @@ class CourseController extends Controller
 
     protected $courseRepository;
 
- 
-
     public function __construct(CourseRepositoryInterface $courseRepository)
     {
         $this->courseRepository = $courseRepository;
@@ -56,6 +54,7 @@ class CourseController extends Controller
         $data = $request->all();
         $data['users_id'] = $user->id;
         $TotaleCourse = $this->TotalCoursesCreated($user);
+        
         if($TotaleCourse === 5) {
             UserBadge::create([
                 'user_id' => $user->id,
