@@ -71,6 +71,8 @@ Route::prefix('V2')->group(function () {
     // serche par les course 
     Route::get('courses/serch', [CourseController::class, 'search']);
     Route::get('/courses/{categoryId?}', [CourseController::class, 'getAllCoursesParCategories']);
+    Route::get('mentor/serch', [CourseController::class, 'getMentorParName']);
+
 });
 
 

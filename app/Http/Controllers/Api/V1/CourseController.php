@@ -1,6 +1,7 @@
 <?php 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\User;
 use App\Models\Course;
 use App\Models\UserBadge;
 use Illuminate\Http\Request;
@@ -96,19 +97,20 @@ class CourseController extends Controller
         }
         return Course::all();
     }
+
+    public function getMentorParName(Request $request)
+    {
+        $query = $request->input('search');
     
+        $mentors = User::query()
+            ->where('role', 'mentor') 
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%');
+            })
+            ->get();
+    
+        return response()->json($mentors);
+    }
+    
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
