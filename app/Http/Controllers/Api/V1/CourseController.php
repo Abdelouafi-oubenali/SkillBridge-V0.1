@@ -88,6 +88,15 @@ class CourseController extends Controller
             ->get();
         return response()->json($courses);
     }
+
+    public function getAllCoursesParCategories($categoryId = null)
+    {
+        if ($categoryId) {
+            return Course::where('category_id', $categoryId)->get();
+        }
+        return Course::all();
+    }
+    
 }
 
 
