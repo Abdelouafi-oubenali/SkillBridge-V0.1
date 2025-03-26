@@ -66,6 +66,8 @@ Route::prefix('V2')->group(function () {
 
     // les padg gestion 
     Route::middleware('auth:sanctum')->apiResource('badges', BadgeController::class);
+    Route::middleware('auth:sanctum')->get('/badge-to-mentors', [BadgeController::class, 'badgeToMentors']);
+
 });
 
 

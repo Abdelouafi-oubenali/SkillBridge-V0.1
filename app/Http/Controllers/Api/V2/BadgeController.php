@@ -2,11 +2,13 @@
 namespace App\Http\Controllers\Api\V2;
 
 use App\Models\Badge;
+use App\Models\Course;
+use App\Models\Enrollment;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBadgeRequest;
 use App\Http\Requests\UpdateBadgeRequest;
 use Illuminate\Contracts\Support\Responsable;
-use Illuminate\Http\Request;
 
 class BadgeController extends Controller
 {
@@ -29,7 +31,6 @@ class BadgeController extends Controller
         $badge = Badge::create($request->validated());
         return response()->json($badge, 201);
     }
-    
 
     public function update(UpdateBadgeRequest $request, $id)
     {
@@ -62,4 +63,21 @@ class BadgeController extends Controller
         $badge->delete();
         return response()->json(['message' => 'Badge supprimé avec succès'], 200);
     }
+
+    public function badgeToMentors(Request $request) {
+
+        $user = $request->user();
+        if (!$user) {
+            return response()->json(['error' => 'Utilisateur non authentifié'], 401);
+        }
+        $userCourses = Course::where('users_id', $user->id)->get();
+        $totalEnrollments = 0;
+        foreach ($userCourses as $course) {
+            $totalEnrollments ++;
+        }
+        if($totalEnrollments >= 5) {
+            
+        }
+    }
+    
 }

@@ -53,7 +53,8 @@ class EnrollmentController extends Controller
             ]);
             return response()->json(['message' => 'Vous êtes déjà inscrit à ce cours.'], 409);
         }
-    
+        
+
         // Création de l'inscription
         $enrollment = Enrollment::create([
             'user_id' => $user->id,
@@ -81,7 +82,9 @@ class EnrollmentController extends Controller
             'success_url' => url('/api/V2/checkout/success?enrollment_id=' . $enrollment->id),
             'cancel_url' => url('/api/V2/checkout/cancel'),
         ]);
-    
+         
+        
+         
         return response()->json([
             'message' => 'Inscription réussie. Redirection vers le paiement.',
             'payment_url' => $session->url,

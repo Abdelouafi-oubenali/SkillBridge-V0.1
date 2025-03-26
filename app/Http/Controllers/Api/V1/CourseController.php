@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\Course;
+use App\Models\UserBadge;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCourseRequest;
@@ -12,11 +13,27 @@ class CourseController extends Controller
 {
     use AuthorizesRequests; 
 
+
     protected $courseRepository;
+
+ 
 
     public function __construct(CourseRepositoryInterface $courseRepository)
     {
         $this->courseRepository = $courseRepository;
+    }
+
+    private function TotalCoursesCreated($user) {
+
+        if (!$user) {
+            return response()->json(['error' => 'Utilisateur non authentifié'], 401);
+        }
+        $userCourses = Course::where('users_id', $user->id)->get();
+        $totalEnrollments = 0;
+        foreach ($userCourses as $course) {
+            $totalEnrollments ++;
+        }
+        return $totalEnrollments;
     }
 
     public function index()
@@ -31,18 +48,19 @@ class CourseController extends Controller
 
     public function store(StoreCourseRequest $request)
     {
-
         if (!auth()->check()) {
             return response()->json(['error' => 'Unauthorized'], 401);  
         }
-    
         $user = auth()->user();
-    
-    
         $data = $request->all();
         $data['users_id'] = $user->id;
-        // dd($data);
-    
+        $TotaleCourse = $this->TotalCoursesCreated($user);
+        if($TotaleCourse === 5) {
+            UserBadge::create([
+                'user_id' => $user->id,
+                'badge_id' => 1
+            ]);
+        }   
         return $this->courseRepository->create($data);
     }
     

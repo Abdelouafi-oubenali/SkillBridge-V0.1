@@ -15,6 +15,7 @@ class CourseFactory extends Factory
             'title' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
             'category_id' => \App\Models\Category::factory(), 
+            'users_id' => 4
         ];
     }
 }
